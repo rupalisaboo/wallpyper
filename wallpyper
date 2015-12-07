@@ -2,9 +2,11 @@
 
 import configparser
 import os
+import time
+from gi.repository import Gio, GLib
 
 Config = configparser.ConfigParser()
-homeDir = os.environ.get('HOME') + '/'
+homeDir = os.environ.get('HOME')
 confName = homeDir + '/.wallpyper.conf'
 
 # Checks if conf file exists.
@@ -13,8 +15,9 @@ if os.path.isfile(confName):
 else:
     conf = open(confName, 'w+')
     conf.write('[Configuration]\n' +
-               'Directory: ' + homeDir + 'Pictures\n'
-               'Pictures: *')
+               'Directory: ' + homeDir + 'Pictures\n' +
+               'Pictures: *\n' +
+               'Time: 300')
     conf.close()
     conf = open(confName, 'r')
 
@@ -34,13 +37,20 @@ def ConfigSectionMap(section):
             dict1[option] = None
     return dict1
 
-root = ConfigSectionMap("Configuration")["directory"]
-path = os.path.join(root, "targetdirectory")
+root = ConfigSectionMap('Configuration')['directory']
+path = os.path.join(root, 'targetdirectory')
 fileList = []
 
-for path, subdirs, files in os.walk(root):
-    for name in files:
-        fileList.append(os.path.join(path, name))
+if ConfigSectionMap('Configuration')['pictures'] == '*':
+    for path, subdirs, files in os.walk(root):
+        for name in files:
+            fileList.append(os.path.join(path, name))
 
-print(fileList[1])
+setting=Gio.Settings.new('org.gnome.desktop.background')
+
+for f in fileList:
+    fileString = 'file://' + f
+    setting.set_string('picture-uri', fileString)
+    time.sleep(int(ConfigSectionMap('Configuration')['time']))
+
 conf.close()
