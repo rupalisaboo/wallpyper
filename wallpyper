@@ -48,9 +48,14 @@ if ConfigSectionMap('Configuration')['pictures'] == '*':
 
 setting=Gio.Settings.new('org.gnome.desktop.background')
 
+formats = ['.jpeg', '.jpg', '.bmp', '.gif', '.png']
+
 for f in fileList:
-    fileString = 'file://' + f
-    setting.set_string('picture-uri', fileString)
-    time.sleep(int(ConfigSectionMap('Configuration')['time']))
+    if os.path.splitext(f)[1] in formats:
+        fileString = 'file://' + f
+        setting.set_string('picture-uri', fileString)
+        time.sleep(int(ConfigSectionMap('Configuration')['time']))
+    else:
+        print('Error: ' + f + 'is not a valid image.')
 
 conf.close()
