@@ -10,11 +10,11 @@ homeDir = os.environ.get('HOME')
 confName = homeDir + '/.wallpyper.conf'
 
 # Checks if conf file exists.
-if !os.path.isfile(confName):
+if not os.path.isfile(confName):
     conf = open(confName, 'w+')
     conf.write('[Configuration]\n\n' +
                '# Directory of the pictures. Defaults to ~/Pictures\n' +
-               'Directory: ' + homeDir + 'Pictures\n\n' +
+               'Directory: ' + homeDir + '/Pictures\n\n' +
                '# Comment separated list of file names (not paths), or \'*\' for all\n' +
                'Pictures: *\n\n' +
                '# Time each wallpaper is shown in seconds. Defaults to 5 minutes\n' +
