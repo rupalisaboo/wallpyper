@@ -40,22 +40,28 @@ def ConfigSectionMap(section):
 root = ConfigSectionMap('Configuration')['directory']
 path = os.path.join(root, 'targetdirectory')
 fileList = []
+tempList = []
 
 if ConfigSectionMap('Configuration')['pictures'] == '*':
     for path, subdirs, files in os.walk(root):
         for name in files:
             fileList.append(os.path.join(path, name))
+else:
+    for f in ConfigSectionMap('Configuration')['pictures'].split(','):
+        fileList.append(os.path.join(root, f))
+    print(fileList)
 
 setting=Gio.Settings.new('org.gnome.desktop.background')
 
 formats = ['.jpeg', '.jpg', '.bmp', '.gif', '.png']
 
-for f in fileList:
-    if os.path.splitext(f)[1] in formats:
-        fileString = 'file://' + f
-        setting.set_string('picture-uri', fileString)
-        time.sleep(int(ConfigSectionMap('Configuration')['time']))
-    else:
-        print('Error: ' + f + 'is not a valid image.')
+while True:
+    for f in fileList:
+        if os.path.splitext(f)[1] in formats:
+            fileString = 'file://' + f
+            setting.set_string('picture-uri', fileString)
+            time.sleep(int(ConfigSectionMap('Configuration')['time']))
+        else:
+            print('Error: ' + f + 'is not a valid image.')
 
 conf.close()
